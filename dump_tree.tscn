@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://dump12345678"]
+
+[ext_resource type="Script" path="res://print_tree.gd" id="1"]
+
+[node name="DumpTree" type="Node"]
+script = ExtResource("1")

@@ -10,12 +10,25 @@ class_name Vehicle extends Node3D
 @onready var vehicle_model = $Container
 @onready var vehicle_body = get_node_or_null("Container/Model/body")
 
-# (Optional) wheels
+# Wheels (from vehicle-toyota-ae86.glb sub-nodes)
+# The Car node has rotation [0.5,-0.5,0.5,-0.5] which remaps axes:
+#   Car-local Y → World -Z (forward/back), Car-local Z → World X (lateral)
+# So front/rear is determined by Car-local Y, side by Car-local Z.
+# Wheel1 & Wheel3 share Y≈-0.055 = front, Wheel2 & Wheel4 share Y≈+0.050 = rear
 
-@onready var wheel_fl = get_node_or_null("Container/Model/wheel-front-left")
-@onready var wheel_fr = get_node_or_null("Container/Model/wheel-front-right")
-@onready var wheel_bl = get_node_or_null("Container/Model/wheel-back-left")
-@onready var wheel_br = get_node_or_null("Container/Model/wheel-back-right")
+@onready var wheel_fl = get_node_or_null("Container/Model/RootNode/Car/Wheel1")  # front-left
+@onready var wheel_fr = get_node_or_null("Container/Model/RootNode/Car/Wheel3")  # front-right
+@onready var wheel_bl = get_node_or_null("Container/Model/RootNode/Car/Wheel4")  # back-left
+@onready var wheel_br = get_node_or_null("Container/Model/RootNode/Car/Wheel2")  # back-right
+
+# Store original wheel quaternions (GLB has per-wheel orientations we must preserve)
+var wheel_base_quats: Dictionary = {}
+
+# Accumulated rolling angle
+var wheel_roll_angle: float = 0.0
+
+# Current visual steering angle (smoothed)
+var current_steer_angle: float = 0.0
 
 # Effects
 
@@ -47,6 +60,16 @@ var calculated_lean: float
 func get_vehicle_position() -> Vector3: return vehicle_model.global_position
 
 # Functions
+
+func _ready():
+	# Capture base quaternions of each wheel after the GLB is loaded
+	# We need to defer this to ensure the imported scene is fully ready
+	_store_wheel_base_rotations.call_deferred()
+
+func _store_wheel_base_rotations():
+	for wheel in [wheel_fl, wheel_fr, wheel_bl, wheel_br]:
+		if wheel != null:
+			wheel_base_quats[wheel] = wheel.quaternion
 
 func _physics_process(delta):
 
@@ -133,16 +156,34 @@ func effect_body(delta):
 	
 func effect_wheels(delta):
 
-	# Rotate wheels based on acceleration
+	# Skip if base rotations not yet captured
+	if wheel_base_quats.is_empty():
+		return
 
-	for wheel in [wheel_fl, wheel_fr, wheel_bl, wheel_br]:
-		if wheel != null:
-			wheel.rotation.x += acceleration
+	# Rolling: accumulate angle based on acceleration (same progression as vehicle speed)
+	wheel_roll_angle += acceleration * delta * 20.0
 
-	# Rotate front wheels based on steering direction
+	# Steering: smooth interpolation towards target (visual only, max ±45°)
+	var max_steer_angle := deg_to_rad(45.0)
+	var target_steer := -input.x * max_steer_angle
+	current_steer_angle = lerp_angle(current_steer_angle, target_steer, delta * 10.0)
 
-	if wheel_fl != null: wheel_fl.rotation.y = lerp_angle(wheel_fl.rotation.y, -input.x / 1.5, delta * 10)
-	if wheel_fr != null: wheel_fr.rotation.y = lerp_angle(wheel_fr.rotation.y, -input.x / 1.5, delta * 10)
+	# Build rotation quaternions in Car-local space:
+	# The Car's rotation maps: local Z → World X (axle), local -X → World Y (vertical)
+	#   - Rolling axis  = Car-local Z = Vector3.BACK  (maps to World X = left-right axle)
+	#   - Steering axis = Car-local -X = Vector3.LEFT  (maps to World Y = vertical)
+	var roll_quat := Quaternion(Vector3.BACK, wheel_roll_angle)
+	var steer_quat := Quaternion(Vector3.LEFT, current_steer_angle)
+
+	# Apply rolling to ALL 4 wheels (compose: base_orientation * roll)
+	for wheel in [wheel_bl, wheel_br]:
+		if wheel != null and wheel_base_quats.has(wheel):
+			wheel.quaternion = wheel_base_quats[wheel] * roll_quat
+
+	# Apply rolling + steering to FRONT wheels only (compose: base * steer * roll)
+	for wheel in [wheel_fl, wheel_fr]:
+		if wheel != null and wheel_base_quats.has(wheel):
+			wheel.quaternion = wheel_base_quats[wheel] * steer_quat * roll_quat
 
 # Engine sounds
 
