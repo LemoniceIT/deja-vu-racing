@@ -1,13 +1,24 @@
 <p align="center"><img src="icon.png"/></p> X <p align="center"><img src="icon_2.png"/></p>
 
-# Starter Kit Racing
+# Deja Vu Racing
 
-This package includes a basic template for a racing game in Godot 4.6. Includes features like;
+This project started as a fork of Kenney's Starter Kit Racing with the goal of creating a arcade racing experience freely inspired by Initial D and the JDM drift culture.
+
+This package includes a basic template for a racing game in Godot 4.6. Includes features like:
 
 - Arcade-like vehicle controls
-- Smoke effect
+
+- Custom Toyota AE86 3D car model
+
+- Animated wheel rotation and steering tilt
+
+- Eurobeat-inspired soundtrack ("Dejavu Kaze")
+
+- Particle smoke effects
+
 - GridMap based track creation
-- 3D Models & sounds _(CC0 licensed)_
+
+- Base 3D models & sound effects (CC0 licensed)
 
 ### Screenshot
 
@@ -53,14 +64,40 @@ Remove the 'Vehicle' node from the main scene. Find the 'vehicle-motorcycle.tscn
 
 MIT License
 
-Copyright (c) 2026 Kenney
+Copyright (c) Kenney / LemoniceIT
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 
-Assets included in this package (2D sprites, 3D models and sound effects) are [CC0 licensed](https://creativecommons.org/publicdomain/zero/1.0/)
+Assets included in this package (2D sprites, 3D models and sound effects) are CC0 licensed
 
-The skid sound effect was made by [Landeplage](https://github.com/Landeplage) and is also CC0 licensed
+The skid sound effect was made by Landeplage and is also CC0 licensed
+
+================================================================================
+THIRD-PARTY ASSETS & CREDITS
+================================================================================
+
+3D Models:
+- "Toyota AE86" by IvOfficial
+  Licensed under Creative Commons Attribution (CC-BY 4.0)
+  Source: Poly Pizza (https://poly.pizza/)
+
+Audio & Soundtrack:
+- "Dejavu Kaze" generated via Suno AI
+  Licensed under Suno Terms of Service (Non-Commercial Use Only)
+  Source: https://suno.com/s/eWi3QKRFB9xy19Ha
