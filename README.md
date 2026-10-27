@@ -1,4 +1,4 @@
-<p align="center"><img src="icon.png"/></p> X <p align="center"><img src="icon_2.png"/></p>
+<p align="center"><img src="icon_2.png"/></p>
 
 # Deja Vu Racing
 
