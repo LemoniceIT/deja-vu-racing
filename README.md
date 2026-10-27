@@ -88,9 +88,7 @@ Assets included in this package (2D sprites, 3D models and sound effects) are CC
 
 The skid sound effect was made by Landeplage and is also CC0 licensed
 
-================================================================================
-THIRD-PARTY ASSETS & CREDITS
-================================================================================
+### THIRD-PARTY ASSETS & CREDITS
 
 3D Models:
 - "Toyota AE86" by IvOfficial
