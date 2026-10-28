@@ -1,0 +1,52 @@
+[gd_scene load_steps=3]
+
+[ext_resource type="Texture2D" uid="uid://byqqbebrbr4l2" path="res://splash-screen.png" id="1_bg"]
+[ext_resource type="Script" path="res://scripts/menu.gd" id="2_menu"]
+
+[node name="Menu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("2_menu")
+
+[node name="Background" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_bg")
+stretch_mode = 6
+
+[node name="Center" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Buttons" type="VBoxContainer" parent="Center"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="NewGameButton" type="Button" parent="Center/Buttons"]
+custom_minimum_size = Vector2(320, 64)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "NEW GAME"
+
+[node name="OptionButton" type="Button" parent="Center/Buttons"]
+custom_minimum_size = Vector2(320, 64)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "OPTION"
+
+[connection signal="pressed" from="Center/Buttons/NewGameButton" to="." method="_on_new_game_pressed"]
+[connection signal="pressed" from="Center/Buttons/OptionButton" to="." method="_on_option_pressed"]
