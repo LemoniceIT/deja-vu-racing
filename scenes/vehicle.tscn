@@ -62,7 +62,7 @@ script = ExtResource("1_e2g1l")
 
 [node name="Ground" type="RayCast3D" parent="." unique_id=496963048]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
-target_position = Vector3(0, -0.7, 0)
+target_position = Vector3(0, -1.5, 0)
 hit_back_faces = false
 debug_shape_custom_color = Color(0.898039, 0, 0, 1)
 
