@@ -20,6 +20,10 @@ This package includes a basic template for a racing game in Godot 4.6. Includes 
 
 - Base 3D models & sound effects (CC0 licensed)
 
+- New drift bar
+
+<p align="center"><img src="drift-bar-preview.png"/></p>
+
 ### Screenshot
 
 <p align="center"><img src="screenshots/screenshot.png"/></p>
