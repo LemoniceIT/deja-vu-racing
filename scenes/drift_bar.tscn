@@ -1,0 +1,20 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/drift_bar.gd" id="1_driftbar"]
+[ext_resource type="Texture2D" uid="uid://drly0n3ul840a" path="res://assets/kenney_ui-pack-space-expansion/PNG/Extra/panel_glass.png" id="2_panel"]
+[ext_resource type="Texture2D" uid="uid://dxhry1e57cybj" path="res://assets/kenney_ui-pack-space-expansion/PNG/Extra/bar_shadow_square_outline_small_square.png" id="3_off"]
+[ext_resource type="Texture2D" uid="uid://qv4s7c6vxag0" path="res://assets/kenney_ui-pack-space-expansion/PNG/Blue/bar_square_gloss_small_square.png" id="4_on"]
+[ext_resource type="FontFile" uid="uid://cab84co7pij3f" path="res://assets/kenney_ui-pack-space-expansion/Font/Kenney Future Narrow.ttf" id="5_font"]
+
+[node name="DriftBar" type="MarginContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_driftbar")
+panel_texture = ExtResource("2_panel")
+segment_off_texture = ExtResource("3_off")
+segment_on_texture = ExtResource("4_on")
+label_font = ExtResource("5_font")

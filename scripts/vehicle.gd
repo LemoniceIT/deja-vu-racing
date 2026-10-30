@@ -50,6 +50,9 @@ var linear_speed: float
 
 var colliding: bool
 
+# True while the drift smoke is being emitted (read by the Drift Bar HUD)
+var is_drifting: bool = false
+
 var linear_velocity: Vector3
 var prev_position: Vector3
 
@@ -206,6 +209,8 @@ func effect_trails():
 
 	var drift_intensity = abs(linear_speed - acceleration) + (abs(calculated_lean) * 2.0)
 	var should_emit = drift_intensity > 0.25
+
+	is_drifting = should_emit
 
 	if trail_left != null: trail_left.emitting = should_emit
 	if trail_right != null: trail_right.emitting = should_emit
