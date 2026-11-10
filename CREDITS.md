@@ -17,7 +17,7 @@ Keep this file with the game. The soundtrack follows Suno's terms separately fro
 ## 3D models
 
 - **Toyota AE86** by [IvOfficial](https://poly.pizza/m/ZEFWmOPSgh), via Poly Pizza.
-  Files: `models/vehicle-toyota-ae86.glb` (and the copy in `models_new/`).
+  File: `models/vehicle-toyota-ae86.glb`.
   License: [Creative Commons Attribution 3.0](https://creativecommons.org/licenses/by/3.0/) (CC-BY).
   Attribution must be kept.
 
@@ -42,8 +42,8 @@ Keep this file with the game. The soundtrack follows Suno's terms separately fro
 
 ## Audio
 
-- **Dejavu Kaze** and the menu edit **Dejavu-remix (menu edit)**, in `ost/`.
-  Generated with Suno and used for **personal, non-commercial purposes**. Verify the applicable permissions before bundling or redistributing the audio files. [Track on Suno](https://suno.com/s/eWi3QKRFB9xy19Ha) · [Suno terms](https://suno.com/terms)
+- **Dejavu Kaze** and **Dejavu remix (menù edit)**, in `ost/`.
+  Artist credit: **snowbera**. Generated with **Suno**. Rights are reserved to Suno and any other applicable rights holders. Use is subject to Suno's terms for personal, non-commercial use. [Track on Suno](https://suno.com/s/eWi3QKRFB9xy19Ha) · [Suno terms](https://suno.com/terms)
 
 - **JDM engine loop** (`audio/engine-jdm.wav`): original synthesized game audio, released under [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/).
 
@@ -54,5 +54,4 @@ Keep this file with the game. The soundtrack follows Suno's terms separately fro
 ## Effects and sprites
 
 - Drift smoke: original inked sprites in `sprites/drift-smoke-ink.svg`.
-- Original kit smoke texture: `sprites/smoke.png`.
 - Spectators at the start: pixel art generated at runtime in `scripts/spectators.gd`, not an external asset.

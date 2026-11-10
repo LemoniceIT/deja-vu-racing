@@ -141,4 +141,4 @@ The code is [MIT](LICENSE), copyright Kenney / LemoniceIT.
 
 Models, UI, and audio have their own licenses. The list is in [CREDITS.md](CREDITS.md).
 
-**The Suno-generated soundtrack is for personal, non-commercial use.** Verify permission before redistributing the audio files. [Suno terms](https://suno.com/terms)
+**The soundtrack follows Suno's terms for personal, non-commercial use.** Rights are reserved to Suno and any other applicable rights holders. [Soundtrack credits](CREDITS.md#audio) · [Suno terms](https://suno.com/terms)

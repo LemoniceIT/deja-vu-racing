@@ -210,8 +210,9 @@ Toyota AE86 and Mazda RX-7 — IvOfficial, via Poly Pizza (CC BY 3.0)
 Skid loop — Landeplage (CC0)
 JDM engine loop — original game audio (CC0)
 
-Dejavu Kaze and Dejavu-remix (menu edit) — generated with Suno
-Soundtrack for personal, non-commercial use under Suno's terms.
+Dejavu Kaze and Dejavu remix (menù edit) — snowbera / Suno
+Rights reserved to Suno and applicable rights holders.
+Personal, non-commercial use under Suno's terms.
 
 See CREDITS.md for asset sources and license details."""
 	credits.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
