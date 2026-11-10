@@ -59,8 +59,8 @@ func _button(label: String) -> Button:
 		b.add_theme_color_override(color, Color.BLACK)
 	return b
 
-func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_ESCAPE:
+func _input(event: InputEvent) -> void:
+	if event is InputEventKey and event.pressed and not event.echo and (event.keycode == KEY_ESCAPE or event.physical_keycode == KEY_ESCAPE):
 		if overlay.visible:
 			_resume()
 		else:
