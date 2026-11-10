@@ -21,6 +21,8 @@ friction = 0.0
 bounce = 0.1
 
 [node name="Main" type="Node3D" unique_id=1145999287]
+
+[node name="CircuitController" type="Node" parent="."]
 script = ExtResource("15_pause")
 
 [node name="Environment" type="WorldEnvironment" parent="." unique_id=1097254880]
