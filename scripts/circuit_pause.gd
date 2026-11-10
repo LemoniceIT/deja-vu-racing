@@ -103,17 +103,17 @@ func _load_ghost() -> void:
 		ghost_status.text = "GHOST: OFF"
 		return
 
-	var best := GHOST.load_best("circuit", CATALOG.get_selected_id())
+	var best := GHOST.load_best("circuit_best_lap", CATALOG.get_selected_id())
 	var raw: Variant = best.get("frames", [])
 	if raw is Array:
 		ghost_data = raw
 
 	if ghost_data.is_empty():
-		ghost_status.text = "GHOST: NO RECORD YET - FINISH A TIME ATTACK"
+		ghost_status.text = "GHOST: NO BEST LAP YET"
 		return
 
 	_make_ghost()
-	ghost_status.text = "GHOST: BEST RUN"
+	ghost_status.text = "GHOST: BEST LAP"
 
 func _make_ghost() -> void:
 	var source_model := vehicle.get_node_or_null("Container/Model") as Node3D
@@ -122,7 +122,7 @@ func _make_ghost() -> void:
 		return
 
 	ghost_visual = Node3D.new()
-	ghost_visual.name = "BestRunGhost"
+	ghost_visual.name = "BestLapGhost"
 	get_parent().add_child(ghost_visual)
 
 	var model_copy := source_model.duplicate(Node.DUPLICATE_USE_INSTANTIATION) as Node3D
@@ -160,9 +160,13 @@ func _physics_process(delta: float) -> void:
 		lap_armed = true
 
 	if lap_armed and inside_start and not was_inside_start and time_s - lap_started >= MIN_LAP_SECONDS:
-		lap_times.append(time_s - lap_started)
+		var completed_lap_time: float = time_s - lap_started
+		lap_times.append(completed_lap_time)
+		_commit_lap_ghost(completed_lap_time)
 		lap_started = time_s
 		lap_armed = false
+		frames.clear()
+		sample_accum = 0.0
 		if lap_times.size() >= LAPS:
 			_finish()
 
@@ -171,15 +175,27 @@ func _physics_process(delta: float) -> void:
 	sample_accum += delta
 	if sample_accum >= GHOST.SAMPLE_INTERVAL and frames.size() < GHOST.MAX_SAMPLES:
 		sample_accum = 0.0
-		frames.append({"t": time_s, "transform": (vehicle.get("vehicle_model") as Node3D).global_transform})
+		frames.append({"t": time_s - lap_started, "transform": (vehicle.get("vehicle_model") as Node3D).global_transform})
 
 	_update_ghost()
 	_update_hud()
 
+func _commit_lap_ghost(lap_time: float) -> void:
+	if frames.is_empty():
+		return
+	var car := CATALOG.get_selected_id()
+	var saved := GHOST.save_best("circuit_best_lap", car, lap_time, frames)
+	if saved:
+		ghost_data = frames.duplicate(true)
+		if ghost_visual == null:
+			_make_ghost()
+		ghost_status.text = "GHOST: BEST LAP %.2f s" % lap_time
+
 func _update_ghost() -> void:
 	if ghost_visual == null or ghost_data.is_empty():
 		return
-	var index: int = clampi(int(time_s / GHOST.SAMPLE_INTERVAL), 0, ghost_data.size() - 1)
+	var lap_elapsed: float = maxf(time_s - lap_started, 0.0)
+	var index: int = clampi(int(lap_elapsed / GHOST.SAMPLE_INTERVAL), 0, ghost_data.size() - 1)
 	var frame: Variant = ghost_data[index]
 	if frame is Dictionary and frame.has("transform"):
 		ghost_visual.global_transform = frame["transform"]
@@ -202,7 +218,6 @@ func _finish() -> void:
 	var car := CATALOG.get_selected_id()
 	var ranking := RECORDS.record(car, time_s, lap_times)
 	var progression := PROGRESSION.record("circuit", car, time_s)
-	GHOST.save_best("circuit", car, time_s, frames)
 
 	var canvas := CanvasLayer.new()
 	canvas.layer = 30
@@ -246,7 +261,7 @@ func _finish() -> void:
 		box.add_child(row)
 
 	var ghost_note := Label.new()
-	ghost_note.text = "BEST RUN GHOST SAVED" if bool(GRAPHICS.load_settings().get("ghost", true)) else "GHOST DISABLED IN OPTIONS"
+	ghost_note.text = "BEST LAP GHOST UPDATED" if bool(GRAPHICS.load_settings().get("ghost", true)) else "GHOST DISABLED IN OPTIONS"
 	ghost_note.add_theme_font_override("font", UI_FONT)
 	box.add_child(ghost_note)
 
