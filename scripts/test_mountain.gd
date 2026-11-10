@@ -284,9 +284,9 @@ func _play_countdown() -> void:
 		label.scale = Vector2(1.18, 1.18)
 		var pulse := create_tween()
 		pulse.tween_property(label, "scale", Vector2.ONE, 0.18).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-		await get_tree().create_timer(1.0).timeout
+		await get_tree().create_timer(1.0, false).timeout
 	label.text = "GO!"
-	await get_tree().create_timer(0.45).timeout
+	await get_tree().create_timer(0.45, false).timeout
 	label.queue_free()
 
 

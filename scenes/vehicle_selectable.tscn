@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://scripts/vehicle_selectable.gd" id="1_e2g1l"]
 [ext_resource type="PackedScene" path="res://scenes/drift_smoke.tscn" id="3_smoke"]
 [ext_resource type="AudioStream" uid="uid://2in1jtv5bh0y" path="res://audio/skid.ogg" id="4_mcce1"]
-[ext_resource type="AudioStream" uid="uid://j6x2is8pyt8y" path="res://audio/engine.ogg" id="5_kcati"]
+[ext_resource type="AudioStream" uid="uid://dkpj3v7vdi5qw" path="res://audio/engine-jdm.wav" id="5_kcati"]
 [ext_resource type="AudioStream" uid="uid://io4pmr3lo1dy" path="res://audio/impact.ogg" id="6_v3p7b"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_eyo0u"]

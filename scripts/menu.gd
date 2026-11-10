@@ -38,6 +38,9 @@ func _ready() -> void:
 	$Center.offset_bottom = 0.0
 	_build_car_select_menu()
 	_add_leaderboard_button()
+	var credits_button := _styled_button("CREDITS")
+	credits_button.pressed.connect(_open_credits)
+	main_menu.add_child(credits_button)
 	_setup_now_playing()
 
 
@@ -194,6 +197,35 @@ func _add_leaderboard_button() -> void:
 	main_menu.add_child(button)
 	main_menu.move_child(button, 1)
 	button.pressed.connect(_open_leaderboard)
+
+func _open_credits() -> void:
+	main_menu.hide()
+	var overlay := _make_overlay("CREDITS")
+	var content := overlay.get_meta("content") as VBoxContainer
+	var credits := Label.new()
+	credits.text = """Deja Vu Racing — LemoniceIT
+Starter Kit Racing and game asset packs — Kenney (MIT / CC0)
+
+Toyota AE86 and Mazda RX-7 — IvOfficial, via Poly Pizza (CC BY 3.0)
+Skid loop — Landeplage (CC0)
+JDM engine loop — original game audio (CC0)
+
+Dejavu Kaze and Dejavu-remix (menu edit) — generated with Suno
+Soundtrack for personal, non-commercial use under Suno's terms.
+
+See CREDITS.md for asset sources and license details."""
+	credits.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	credits.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	credits.add_theme_font_size_override("font_size", 20)
+	content.add_child(credits)
+	var back := _styled_button("BACK")
+	back.pressed.connect(func() -> void:
+		overlay.queue_free()
+		main_menu.show()
+		single_player_button.grab_focus()
+	)
+	content.add_child(back)
+	back.grab_focus()
 
 
 func _styled_button(label: String) -> Button:

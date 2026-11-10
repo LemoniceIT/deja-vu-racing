@@ -2,7 +2,7 @@
 
 Third-party asset licenses used in Deja Vu Racing. Project code is MIT: see [LICENSE](LICENSE).
 
-If you redistribute a build, keep this file with the game. The Suno soundtrack is **not** covered by the MIT license and is **not** for commercial use.
+Keep this file with the game. The soundtrack follows Suno's terms separately from the MIT code license.
 
 ## Code and template
 
@@ -43,12 +43,9 @@ If you redistribute a build, keep this file with the game. The Suno soundtrack i
 ## Audio
 
 - **Dejavu Kaze** and the menu edit **Dejavu-remix (menu edit)**, in `ost/`.
-  Generated with [Suno](https://suno.com/s/eWi3QKRFB9xy19Ha).
-  Use follows the [Suno terms](https://suno.com/terms): **non-commercial only**.
-  Do not publish them on stores, monetize them, or treat them as CC0 / MIT.
+  Generated with Suno and used for **personal, non-commercial purposes**. Verify the applicable permissions before bundling or redistributing the audio files. [Track on Suno](https://suno.com/s/eWi3QKRFB9xy19Ha) · [Suno terms](https://suno.com/terms)
 
-- **Engine** (`audio/engine.ogg`): sound effect by [Niilo Laitamäki (finlo)](https://pixabay.com/it/users/finlo-43919229/) on Pixabay (id 238996).
-  Pixabay Content License. Check the effect's page before a commercial release.
+- **JDM engine loop** (`audio/engine-jdm.wav`): original synthesized game audio, released under [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/).
 
 - **Impact** (`audio/impact.ogg`) and **motorcycle engine** (`audio/engine-motorcycle.ogg`): kit effects / upstream contributions, CC0 unless the original file says otherwise.
 

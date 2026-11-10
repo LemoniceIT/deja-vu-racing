@@ -21,13 +21,13 @@
 2. Clone the repository and open `project.godot`.
 3. Press F5. The boot scene is `scenes/menu.tscn`.
 
-From the menu: **Single Player**, choose a car, then choose a track. **Options** includes locally saved display and graphics preferences. The **Leaderboard** button shows the top ten saved runs for each mountain track.
+From the menu, choose **Single Player**, then a car and track. **Options** includes locally saved display and graphics preferences. **Leaderboard** shows the local top ten for each event. **Credits** lists the contributors and asset licenses.
 
 ## Graphics options and pause
 
 The main menu provides windowed resolution, fullscreen mode, render scale (Low 65%, Medium 85%, High 100%), MSAA and VSync. Settings are stored locally in `user://graphics_settings.cfg` and applied when the menu opens or values change. In fullscreen, the operating system controls the actual display resolution.
 
-During a race, press **Esc** to freeze the scene and open **Resume**, **Restart**, or **Main Menu**. Circuit has a pause overlay too, even though it currently has no finish line or leaderboard.
+During a race, press **Esc** to freeze the scene and open **Resume**, **Restart**, or **Main Menu**.
 
 ## Controls
 
@@ -55,7 +55,7 @@ That menu screenshot is from before the latest entry. **Mountain Night** is in t
 
 ### Circuit
 
-`scenes/main.tscn`. The kit's tile circuit, still a `GridMap`, with parked trucks as scenery. Free roam, no finish line. Selectable AE86 or RX-7, smoke, skid marks, and *Dejavu Kaze*.
+`scenes/main.tscn`. A three-lap Time Attack on the kit's tile circuit. Timing starts at the line. Each lap requires the checkpoints in order and a forward finish crossing. The local top ten ranks total times, and the best-lap ghost is saved per car. Records and ghosts from before checkpoint validation stay separate from the current leaderboard and replay.
 
 <p align="center">
   <img src="screenshots/screenshot.png" alt="AE86 on the tile circuit">
@@ -141,4 +141,4 @@ The code is [MIT](LICENSE), copyright Kenney / LemoniceIT.
 
 Models, UI, and audio have their own licenses. The list is in [CREDITS.md](CREDITS.md).
 
-**The Suno-generated music is non-commercial only.** The rest of the project does not make it freely redistributable.
+**The Suno-generated soundtrack is for personal, non-commercial use.** Verify permission before redistributing the audio files. [Suno terms](https://suno.com/terms)
