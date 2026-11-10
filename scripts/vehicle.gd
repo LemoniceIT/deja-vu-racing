@@ -91,6 +91,7 @@ var linear_velocity: Vector3
 var collision_lockout: float
 
 var calculated_lean: float
+var controls_locked: bool = false
 
 # Public Functions
 
@@ -144,6 +145,11 @@ func _physics_process(delta: float) -> void:
 
 
 func _drive_on_ground(delta: float, normal: Vector3, wall_normal: Vector3, obstacle_contact: bool) -> void:
+	if controls_locked:
+		input = Vector3.ZERO
+		sphere.linear_velocity = Vector3.ZERO
+		sphere.angular_velocity = Vector3.ZERO
+		return
 	input.x = _read_steering(delta)
 	input.z = Input.get_axis("back", "forward")
 
