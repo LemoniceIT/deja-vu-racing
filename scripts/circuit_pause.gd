@@ -50,36 +50,11 @@ func _ready() -> void:
 	_start_countdown.call_deferred()
 
 func _make_hud() -> void:
-	var canvas := CanvasLayer.new()
-	canvas.name = "TimeAttackHUD"
-	canvas.layer = 12
-	get_parent().add_child(canvas)
-
-	var panel := PanelContainer.new()
-	panel.position = Vector2(22, 22)
-	panel.custom_minimum_size = Vector2(430, 118)
-	canvas.add_child(panel)
-
-	var box := VBoxContainer.new()
-	box.add_theme_constant_override("separation", 4)
-	panel.add_child(box)
-
-	var title := Label.new()
-	title.text = "CIRCUIT TIME ATTACK  •  3 LAPS"
-	title.add_theme_font_override("font", UI_FONT)
-	title.add_theme_font_size_override("font_size", 24)
-	box.add_child(title)
-
-	hud = Label.new()
-	hud.add_theme_font_override("font", UI_FONT)
-	hud.add_theme_font_size_override("font_size", 22)
-	box.add_child(hud)
-
-	ghost_status = Label.new()
-	ghost_status.add_theme_font_override("font", UI_FONT)
-	ghost_status.add_theme_font_size_override("font_size", 16)
-	ghost_status.text = "GHOST: CHECKING..."
-	box.add_child(ghost_status)
+	hud = get_parent().get_node_or_null("HUD/TimeAttackPanel/VBox/Status") as Label
+	ghost_status = get_parent().get_node_or_null("HUD/TimeAttackPanel/VBox/GhostStatus") as Label
+	if hud == null or ghost_status == null:
+		push_error("Circuit: static Time Attack HUD nodes are missing from main.tscn")
+		return
 	_update_hud()
 
 func _start_countdown() -> void:
@@ -87,7 +62,7 @@ func _start_countdown() -> void:
 	var canvas := CanvasLayer.new()
 	canvas.name = "TimeAttackCountdown"
 	canvas.layer = 30
-	add_child(canvas)
+	get_parent().add_child(canvas)
 
 	var center := CenterContainer.new()
 	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
