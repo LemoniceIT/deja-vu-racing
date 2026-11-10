@@ -44,6 +44,7 @@ func _ready() -> void:
 		push_error("Circuit: VehicleSelectable not found")
 		return
 
+	vehicle.set("controls_locked", true)
 	_make_hud()
 	_make_gates()
 	_load_ghost.call_deferred()
@@ -79,6 +80,7 @@ func _start_countdown() -> void:
 		await get_tree().create_timer(0.75).timeout
 
 	canvas.queue_free()
+	vehicle.set("controls_locked", false)
 	time_s = 0.0
 	lap_started = 0.0
 	race_active = true
