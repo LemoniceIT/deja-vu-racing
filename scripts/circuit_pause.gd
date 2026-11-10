@@ -1,4 +1,4 @@
-extends Node3D
+extends Node
 
 const PAUSE_MENU := preload("res://scripts/pause_menu.gd")
 const RECORDS := preload("res://scripts/circuit_records.gd")
@@ -19,7 +19,7 @@ const CHECKPOINTS := [
 	Vector3(-30.0, 0.0, 5.0)
 ]
 
-var vehicle: VehicleSelectable
+var vehicle: Node
 var time_s: float = 0.0
 var lap_started: float = 0.0
 var lap_times: Array = []
@@ -37,9 +37,9 @@ var sample_accum: float = 0.0
 func _ready() -> void:
 	var pause := PAUSE_MENU.new()
 	pause.name = "PauseMenu"
-	add_child(pause)
+	get_parent().add_child(pause)
 
-	vehicle = get_node_or_null("Vehicle") as VehicleSelectable
+	vehicle = get_parent().get_node_or_null("Vehicle")
 	if vehicle == null:
 		push_error("Circuit: VehicleSelectable not found")
 		return
@@ -53,7 +53,7 @@ func _make_hud() -> void:
 	var canvas := CanvasLayer.new()
 	canvas.name = "TimeAttackHUD"
 	canvas.layer = 12
-	add_child(canvas)
+	get_parent().add_child(canvas)
 
 	var panel := PanelContainer.new()
 	panel.position = Vector2(22, 22)
@@ -124,7 +124,7 @@ func _make_gates() -> void:
 		material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 		marker.material_override = material
 		marker.position = CHECKPOINTS[i] + Vector3.UP * 0.18
-		add_child(marker)
+		get_parent().add_child(marker)
 
 func _load_ghost() -> void:
 	var settings := GRAPHICS.load_settings()
@@ -152,7 +152,7 @@ func _make_ghost() -> void:
 
 	ghost_visual = Node3D.new()
 	ghost_visual.name = "BestRunGhost"
-	add_child(ghost_visual)
+	get_parent().add_child(ghost_visual)
 
 	var model_copy := source_model.duplicate(Node.DUPLICATE_USE_INSTANTIATION) as Node3D
 	if model_copy == null:
@@ -172,11 +172,14 @@ func _make_ghost() -> void:
 		mesh_instance.material_override = ghost_mat
 
 func _physics_process(delta: float) -> void:
-	if finished or not race_active or vehicle == null or vehicle.sphere == null:
+	if finished or not race_active or vehicle == null or vehicle.get("sphere") == null:
 		return
 
 	time_s += delta
-	var position := vehicle.sphere.global_position
+	var sphere := vehicle.get("sphere") as RigidBody3D
+	if sphere == null:
+		return
+	var position := sphere.global_position
 	var target: Vector3 = CHECKPOINTS[next_gate]
 	var inside := Vector2(position.x - target.x, position.z - target.z).length() <= CHECKPOINT_RADIUS
 
@@ -197,7 +200,7 @@ func _physics_process(delta: float) -> void:
 	sample_accum += delta
 	if sample_accum >= GHOST.SAMPLE_INTERVAL and frames.size() < GHOST.MAX_SAMPLES:
 		sample_accum = 0.0
-		frames.append({"t": time_s, "transform": vehicle.vehicle_model.global_transform})
+		frames.append({"t": time_s, "transform": (vehicle.get("vehicle_model") as Node3D).global_transform})
 
 	_update_ghost()
 	_update_hud()
