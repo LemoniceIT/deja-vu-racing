@@ -9,22 +9,17 @@ const CATALOG := preload("res://scripts/vehicle_catalog.gd")
 const UI_FONT := preload("res://assets/kenney_ui-pack-space-expansion/Font/Kenney Future Narrow.ttf")
 
 const LAPS := 3
-const CHECKPOINT_RADIUS := 7.0
+const START_FINISH := Vector3(3.5, 0.0, 5.0)
+const START_FINISH_RADIUS := 6.5
+const REARM_RADIUS := 11.0
 const MIN_LAP_SECONDS := 8.0
-const CHECKPOINTS := [
-	Vector3(3.5, 0.0, 5.0),
-	Vector3(40.0, 0.0, 5.0),
-	Vector3(40.0, 0.0, -35.0),
-	Vector3(-30.0, 0.0, -35.0),
-	Vector3(-30.0, 0.0, 5.0)
-]
 
 var vehicle: Node
 var time_s: float = 0.0
 var lap_started: float = 0.0
 var lap_times: Array = []
-var next_gate: int = 1
-var was_inside: bool = false
+var lap_armed: bool = false
+var was_inside_start: bool = true
 var finished: bool = false
 var race_active: bool = false
 var hud: Label
@@ -46,7 +41,7 @@ func _ready() -> void:
 
 	vehicle.set("controls_locked", true)
 	_make_hud()
-	_make_gates()
+	_make_start_finish_marker()
 	_load_ghost.call_deferred()
 	_start_countdown.call_deferred()
 
@@ -85,23 +80,22 @@ func _start_countdown() -> void:
 	lap_started = 0.0
 	race_active = true
 
-func _make_gates() -> void:
-	for i in CHECKPOINTS.size():
-		var marker := MeshInstance3D.new()
-		marker.name = "CircuitGate%d" % i
-		var mesh := CylinderMesh.new()
-		mesh.top_radius = CHECKPOINT_RADIUS
-		mesh.bottom_radius = CHECKPOINT_RADIUS
-		mesh.height = 0.12
-		marker.mesh = mesh
+func _make_start_finish_marker() -> void:
+	var marker := MeshInstance3D.new()
+	marker.name = "CircuitStartFinish"
+	var mesh := CylinderMesh.new()
+	mesh.top_radius = START_FINISH_RADIUS
+	mesh.bottom_radius = START_FINISH_RADIUS
+	mesh.height = 0.12
+	marker.mesh = mesh
 
-		var material := StandardMaterial3D.new()
-		material.albedo_color = Color(0.1, 0.9, 0.95, 0.58) if i == 0 else Color(1.0, 0.68, 0.08, 0.48)
-		material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-		material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-		marker.material_override = material
-		marker.position = CHECKPOINTS[i] + Vector3.UP * 0.18
-		get_parent().add_child(marker)
+	var material := StandardMaterial3D.new()
+	material.albedo_color = Color(0.1, 0.9, 0.95, 0.58)
+	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	marker.material_override = material
+	marker.position = START_FINISH + Vector3.UP * 0.18
+	get_parent().add_child(marker)
 
 func _load_ghost() -> void:
 	var settings := GRAPHICS.load_settings()
@@ -157,22 +151,22 @@ func _physics_process(delta: float) -> void:
 	if sphere == null:
 		return
 	var position := sphere.global_position
-	var target: Vector3 = CHECKPOINTS[next_gate]
-	var inside := Vector2(position.x - target.x, position.z - target.z).length() <= CHECKPOINT_RADIUS
+	var start_distance := Vector2(position.x - START_FINISH.x, position.z - START_FINISH.z).length()
+	var inside_start := start_distance <= START_FINISH_RADIUS
 
-	if inside and not was_inside:
-		if next_gate == 0:
-			if time_s - lap_started >= MIN_LAP_SECONDS:
-				lap_times.append(time_s - lap_started)
-				lap_started = time_s
-				if lap_times.size() >= LAPS:
-					_finish()
-				else:
-					next_gate = 1
-		else:
-			next_gate = (next_gate + 1) % CHECKPOINTS.size()
+	# A lap is armed only after the car has clearly left the start/finish area.
+	# This prevents spawn jitter or circling near the line from creating fake laps.
+	if not lap_armed and start_distance >= REARM_RADIUS:
+		lap_armed = true
 
-	was_inside = inside
+	if lap_armed and inside_start and not was_inside_start and time_s - lap_started >= MIN_LAP_SECONDS:
+		lap_times.append(time_s - lap_started)
+		lap_started = time_s
+		lap_armed = false
+		if lap_times.size() >= LAPS:
+			_finish()
+
+	was_inside_start = inside_start
 
 	sample_accum += delta
 	if sample_accum >= GHOST.SAMPLE_INTERVAL and frames.size() < GHOST.MAX_SAMPLES:
@@ -194,13 +188,11 @@ func _update_hud() -> void:
 	if hud == null:
 		return
 	var current_lap: int = mini(lap_times.size() + 1, LAPS)
-	hud.text = "LAP %d/%d     TIME %02d:%05.2f     CHECKPOINT %d/%d" % [
+	hud.text = "LAP %d/%d     TIME %02d:%05.2f" % [
 		current_lap,
 		LAPS,
 		int(time_s / 60.0),
-		fmod(time_s, 60.0),
-		next_gate,
-		CHECKPOINTS.size() - 1
+		fmod(time_s, 60.0)
 	]
 
 func _finish() -> void:
