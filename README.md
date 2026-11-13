@@ -135,6 +135,23 @@ The selectable cars are `models/vehicle-toyota-ae86.glb` and `models/vehicle-toy
 
 The trucks and `scenes/vehicle-motorcycle.tscn` are still in the project, but not in the menu. Kenney models still expect the children `body`, `wheel-front-left`, `wheel-front-right`, `wheel-back-left`, and `wheel-back-right`.
 
+## Headless validation
+
+GitHub Actions uses the official Godot 4.7.2 Linux x86-64 build on Ubuntu 24.04.
+From a Linux checkout with Bash and that Godot version on your path, run the same checks locally:
+
+```bash
+bash tools/validate_project.sh
+```
+
+Set `GODOT_BIN` to use a different path to the Godot executable. The script isolates
+Godot's user data so the bot's run doesn't enter your leaderboard. It imports the
+project, starts Circuit, Mountain and Mountain Night, then runs the Mountain
+validator twice and checks for exit code 0 on completion and 1 on a forced timeout.
+The bot uses a fixed 60 Hz timestep and the track uses fixed placement seeds.
+The validator allows up to 90 simulated seconds to finish and reports time,
+progress, deviation, speed and the failure reason in the job log.
+
 ## License
 
 The code is [MIT](LICENSE), copyright Kenney / LemoniceIT.
