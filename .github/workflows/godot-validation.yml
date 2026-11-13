@@ -1,0 +1,35 @@
+name: Godot validation
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  headless:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      GODOT_VERSION: 4.7.2
+      GODOT_SHA256: cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Godot
+        shell: bash
+        run: |
+          archive="Godot_v${GODOT_VERSION}-stable_linux.x86_64"
+          curl --fail --location --retry 3 \
+            "https://github.com/godotengine/godot-builds/releases/download/${GODOT_VERSION}-stable/${archive}.zip" \
+            --output "$RUNNER_TEMP/godot.zip"
+          printf '%s  %s\n' "$GODOT_SHA256" "$RUNNER_TEMP/godot.zip" | sha256sum --check
+          unzip -q "$RUNNER_TEMP/godot.zip" -d "$RUNNER_TEMP"
+          install "$RUNNER_TEMP/$archive" "$RUNNER_TEMP/godot"
+          echo "$RUNNER_TEMP" >> "$GITHUB_PATH"
+          "$RUNNER_TEMP/godot" --version
+
+      - name: Import and validate tracks
+        run: bash tools/validate_project.sh

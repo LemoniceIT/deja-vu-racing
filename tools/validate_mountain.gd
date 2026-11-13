@@ -4,6 +4,7 @@ extends SceneTree
 # e stampa un riepilogo. Si lancia senza finestra:
 #   Godot --headless --path <progetto> --fixed-fps 60 --script res://tools/validate_mountain.gd
 #   Add -- night to run the same course under the night scene.
+#   Add -- force-timeout to exercise the failure path.
 #   Use an isolated user-data directory to keep bot times out of your leaderboard.
 
 var scene: Node
@@ -18,12 +19,21 @@ var out_time := -1.0
 var finish_time := -1.0
 var connected := false
 var reporting := false
-const DURATION := 90.0
+const DEFAULT_TIMEOUT := 90.0
+var timeout := DEFAULT_TIMEOUT
 
 func _initialize() -> void:
-	var path := "res://scenes/test_mountain_night.tscn" if "night" in OS.get_cmdline_user_args() else "res://scenes/test_mountain.tscn"
-	scene = load(path).instantiate()
-	scene.log_interval = DURATION
+	var args := OS.get_cmdline_user_args()
+	if "force-timeout" in args:
+		timeout = 0.1
+	var path := "res://scenes/test_mountain_night.tscn" if "night" in args else "res://scenes/test_mountain.tscn"
+	var track := load(path) as PackedScene
+	if track == null:
+		printerr("Mountain validation failed: could not load ", path)
+		quit(1)
+		return
+	scene = track.instantiate()
+	scene.log_interval = DEFAULT_TIMEOUT
 	root.add_child(scene)
 	Input.action_press("forward")
 
@@ -34,6 +44,10 @@ func _physics_process(delta: float) -> bool:
 	var v = scene.vehicle
 	var road = scene.road
 	if v == null or road == null:
+		if t >= timeout:
+			printerr("Mountain validation failed: track or vehicle did not initialize")
+			reporting = true
+			quit(1)
 		return false
 	if not connected:
 		connected = true
@@ -73,25 +87,36 @@ func _physics_process(delta: float) -> bool:
 		Input.action_press("left", s)
 	if pos.y < -3.0 and out_time < 0.0:
 		out_time = t
-	if t > DURATION or out_time >= 0.0:
+	if t >= timeout or out_time >= 0.0:
 		reporting = true
-		_report_and_quit.call_deferred(false)
+		_report_and_quit.call_deferred("fell off course" if out_time >= 0.0 else "timeout")
 	return false
 
 
 func _on_finish_reached(_body: Node3D) -> void:
+	if reporting:
+		return
 	finish_time = t
 	reporting = true
-	_report_and_quit.call_deferred(true)
+	var reason := ""
+	if out_time >= 0.0 or scene.vehicle.sphere.global_position.y < -3.0:
+		reason = "fell off course"
+	elif finish_time >= timeout:
+		reason = "timeout"
+	_report_and_quit.call_deferred(reason)
 
 
-func _report_and_quit(finished: bool) -> void:
+func _report_and_quit(reason: String) -> void:
 	var last: int = scene.road.centerline.size() - 1
 	var summary_visible := scene.get_node_or_null("RaceSummary") != null
+	if reason.is_empty() and not summary_visible:
+		reason = "race summary missing"
+	var passed := reason.is_empty()
 	print("=== RISULTATO ===")
 	print("riepilogo a schermo: %s | collisioni: %d | secondi per barra: %s" % [summary_visible, scene.impacts, str(scene.bar_time)])
 	print("traguardo: %s | tempo %.1f s | progresso %d/%d campioni (%.0f%%) | quota max %.1f m | scostamento max dal centro %.1f m | v reale media %.1f min %.1f | caduto: %s" % [
-		("RAGGIUNTO a %.1f s" % finish_time) if finished else "NO", t, best_idx, last, 100.0 * best_idx / last, max_y, max_off, sum_real / maxf(samples, 1), min_real, str(out_time >= 0.0)])
+		("RAGGIUNTO a %.1f s" % finish_time) if finish_time >= 0.0 else "NO", t, best_idx, last, 100.0 * best_idx / last, max_y, max_off, sum_real / maxf(samples, 1), min_real if samples > 0 else 0.0, str(out_time >= 0.0)])
+	print("Mountain validation passed" if passed else "Mountain validation failed: " + reason)
 	scene.queue_free()
 	await process_frame
-	quit(0 if finished and summary_visible else 1)
+	quit(0 if passed else 1)
